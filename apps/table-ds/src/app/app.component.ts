@@ -1,10 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import {ColumnTogglePublic, TableDataSource, withDataSource} from 'data-source';
 import { withColumnToggle } from 'data-source';
+import {withFilters} from "../../../../libs/data-source/src/lib/data-source/filters";
 
 export interface PeriodicElement {
   id: number;
   name: string;
+  position: number;
+  weight: number;
+  symbol: string;
+}
+
+interface PeriodicFilters {
   position: number;
   weight: number;
   symbol: string;
@@ -40,11 +47,18 @@ export class AppComponent implements OnInit {
         data: ELEMENT_DATA,
         name: 'periodicTable',
       },
-      withColumnToggle<Columns>({ columns: ['position', 'name', 'weight', 'symbol'] })
+      withColumnToggle<Columns>({ columns: ['position', 'name', 'weight', 'symbol'] }),
+      withFilters<PeriodicFilters>()
     );
     ds.columns$.subscribe(v => {
-      console.log(v);
+      console.log('columns', v);
     });
+    ds.filters$.subscribe(v => {
+      console.log('filters', v);
+    });
+    ds.setFilters({
+      position: 1
+    })
     this.dataSource = ds;
   }
 }

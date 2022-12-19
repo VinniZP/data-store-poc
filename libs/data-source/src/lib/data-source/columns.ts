@@ -28,7 +28,7 @@ export function withColumnToggle<Columns extends string = string, EntityType ext
     initPublic(store: Store<{ name: any; state: DataStore<EntityType> & ColumnToggleProps<Columns>; config: any }>): ColumnTogglePublic<Columns> {
       return {
         columns$: store.pipe(select(state => state.columns)),
-        visibleColumns$: store.pipe(select(state => state.columns.filter(col => state.disabledColumns.includes(col) === false))),
+        visibleColumns$: store.pipe(select(state => state.columns.filter(col => !state.disabledColumns.includes(col)))),
         toggleColumn(col: Columns) {
           const disabled = new Set(store.getValue().disabledColumns)
           disabled.has(col) ? disabled.delete(col) : disabled.add(col);
