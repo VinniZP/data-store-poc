@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import {
   ColumnTogglePublic,
   TableDataSource,
+  withColumnToggle,
   withDataSource,
+  withFiltersProps,
   withLocalFilters,
 } from 'data-source';
-import { withColumnToggle } from 'data-source';
-import { withFiltersProps } from 'data-source';
 
 export interface PeriodicElement {
   id: number;

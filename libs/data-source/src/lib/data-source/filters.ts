@@ -1,9 +1,6 @@
 import { DataSourcePlugin, DataStore, DataWithId } from './data-source';
-import { PropsFactory, select, Store, withProps } from '@ngneat/elf';
-import { map, Observable } from 'rxjs';
-import { stat } from 'ng-packagr/lib/utils/fs';
-import { CollectionViewer } from '@angular/cdk/collections';
-import { combineLatest } from 'rxjs';
+import { PropsFactory, Store, select, withProps } from '@ngneat/elf';
+import { Observable, combineLatest, map } from 'rxjs';
 
 export interface FilterProps<Filters> {
   filters: Partial<Filters>;

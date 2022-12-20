@@ -1,7 +1,7 @@
-import { withDataSource } from 'data-source';
 import { fakeAsync, tick } from '@angular/core/testing';
+import { select, withProps } from '@ngneat/elf';
+import { withDataSource } from 'data-source';
 import { of } from 'rxjs';
-import {select, withProps} from "@ngneat/elf";
 
 const collectionViewer = { viewChange: of({ start: 0, end: 10 }) };
 
@@ -34,7 +34,7 @@ it('should create datasource with data and plugin', fakeAsync(() => {
       },
       initPublic(store) {
         return {
-          test$: store.pipe(select((state) => state.test))
+          test$: store.pipe(select((state) => state.test)),
         };
       },
     }
@@ -50,4 +50,3 @@ it('should create datasource with data and plugin', fakeAsync(() => {
 
   tick(50);
 }));
-

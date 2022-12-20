@@ -1,17 +1,11 @@
-import {
-  createStore,
-  PropsFactory,
-  select,
-  Store,
-  withProps,
-} from '@ngneat/elf';
+import { CollectionViewer, DataSource } from '@angular/cdk/collections';
+import { PropsFactory, Store, createStore } from '@ngneat/elf';
 import {
   selectAllEntities,
   setEntities,
   withEntities,
 } from '@ngneat/elf-entities';
-import { CollectionViewer, DataSource } from '@angular/cdk/collections';
-import { combineLatest, combineLatestAll, map, Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
   k: infer I
