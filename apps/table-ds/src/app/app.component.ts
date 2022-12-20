@@ -3,9 +3,10 @@ import {
   ColumnTogglePublic,
   TableDataSource,
   withDataSource,
+  withLocalFilters,
 } from 'data-source';
 import { withColumnToggle } from 'data-source';
-import { withFilters } from 'data-source';
+import { withFiltersProps } from 'data-source';
 
 export interface PeriodicElement {
   id: number;
@@ -16,6 +17,7 @@ export interface PeriodicElement {
 }
 
 interface PeriodicFilters {
+  q: string;
   position: number;
   weight: number;
   symbol: string;
@@ -54,16 +56,27 @@ export class AppComponent implements OnInit {
       withColumnToggle<Columns>({
         columns: ['position', 'name', 'weight', 'symbol'],
       }),
-      withFilters<PeriodicFilters>()
+      withFiltersProps<PeriodicFilters>(),
+      withLocalFilters<PeriodicFilters, PeriodicElement>({
+        position: (value, entity) => !value || entity.position === value,
+        symbol: (value, entity) => !value || entity.symbol === value,
+        weight: (value, entity) => !value || entity.weight === value,
+        q: (value, entity) =>
+          !value ||
+          [entity.name, entity.position, entity.weight, entity.symbol]
+            .join(' ')
+            .toLowerCase()
+            .includes(value.toLowerCase()),
+      })
     );
-    ds.columns$.subscribe((v) => {
+    ds.columns$.subscribe((v: Columns[]) => {
       console.log('columns', v);
     });
-    ds.filters$.subscribe((v) => {
+    ds.filters$.subscribe((v: Partial<PeriodicFilters> | undefined) => {
       console.log('filters', v);
     });
     ds.setFilters({
-      position: 1,
+      q: '12',
     });
     this.dataSource = ds;
   }

@@ -14,13 +14,14 @@ import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 import { combineLatest, combineLatestAll, map, Observable, of } from 'rxjs';
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
-    k: infer I
-  ) => void
+  k: infer I
+) => void
   ? I
   : never;
-type MergeReturnType<State extends any[], Key extends PropertyKey> = UnionToIntersection<
-  ReturnType<State[number][Key]>
->;
+type MergeReturnType<
+  State extends any[],
+  Key extends PropertyKey
+> = UnionToIntersection<ReturnType<State[number][Key]>>;
 
 export interface DataWithId {
   id: PropertyKey;
@@ -39,18 +40,35 @@ export interface DataStore<EntityType extends DataWithId> {
   ids: EntityType['id'][];
 }
 
-export interface DataSourcePlugin<P, Public=any, EntityType extends DataWithId = any> {
-  init(): PropsFactory<P, any>;
+export interface DataSourcePlugin<
+  P,
+  Public = any,
+  EntityType extends DataWithId = any
+> {
+  init?(): PropsFactory<P, any> | undefined;
 
-  initPublic(store: Store<{name: any, state: DataStore<EntityType> & P, config: any}>): Public;
-  // mutators: {[k: string]: (store: Store<{name: any, state: DataStore<EntityType> & P, config: any}>) => Observable<any>};
+  initPublic?(
+    store: Store<{ name: any; state: DataStore<EntityType> & P; config: any }>
+  ): Public;
+
+  decorators?: {
+    [L in keyof TableDataSource<any>]?: (
+      method: TableDataSource<any>[L],
+      store: Store<{ name: any; state: DataStore<EntityType> & P; config: any }>
+    ) => TableDataSource<any>[L];
+  };
 }
 
 export function withDataSource<
   T extends DataWithId,
   S extends [...DataSourcePlugin<any, any, T>[]]
->(config: DataSourceConfig<T>, ...plugins: S): TableDataSource<T> & MergeReturnType<S, 'initPublic'> {
-  const initialize = plugins.map((v) => v.init());
+>(
+  config: DataSourceConfig<T>,
+  ...plugins: S
+): TableDataSource<T> & MergeReturnType<S, 'initPublic'> {
+  const initialize = plugins
+    .map((v) => v.init?.())
+    .filter((v) => v !== undefined) as PropsFactory<any, any>[];
   const dataStore = createStore(
     { name: config.name },
     withEntities<T>(),
@@ -68,7 +86,14 @@ export function withDataSource<
     },
   } as unknown as TableDataSource<T> & MergeReturnType<S, 'initPublic'>;
   plugins.forEach((plugin) => {
-    Object.assign(ds, plugin.initPublic(dataStore));
+    if (plugin.initPublic != null) {
+      Object.assign(ds, plugin.initPublic(dataStore));
+    }
+    if (plugin.decorators != null) {
+      Object.entries(plugin.decorators).forEach(([key, value]) => {
+        (ds as any)[key] = value((ds as any)[key], dataStore);
+      });
+    }
   });
 
   if (config.data) {
@@ -76,4 +101,3 @@ export function withDataSource<
   }
   return ds;
 }
-
