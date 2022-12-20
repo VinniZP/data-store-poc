@@ -56,7 +56,6 @@ export function withDataSource<
     withEntities<T>(),
     ...initialize
   );
-  console.log(plugins);
   const ds = {
     connect(collectionViewer: CollectionViewer): Observable<T[]> {
       return dataStore.pipe(selectAllEntities());
