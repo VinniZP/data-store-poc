@@ -25,7 +25,7 @@ export interface DataSourceConfig<T> {
   data?: T[];
 }
 
-export interface TableDataSource<T> extends DataSource<T> {
+export interface StoreDataSource<T> extends DataSource<T> {
   setData(data: T[]): void;
 }
 
@@ -46,10 +46,10 @@ export interface DataSourcePlugin<
   ): Public;
 
   decorators?: {
-    [L in keyof TableDataSource<any>]?: (
-      method: TableDataSource<any>[L],
+    [L in keyof StoreDataSource<any>]?: (
+      method: StoreDataSource<any>[L],
       store: Store<{ name: any; state: DataStore<EntityType> & P; config: any }>
-    ) => TableDataSource<any>[L];
+    ) => StoreDataSource<any>[L];
   };
 }
 
@@ -59,7 +59,7 @@ export function withDataSource<
 >(
   config: DataSourceConfig<T>,
   ...plugins: S
-): TableDataSource<T> & MergeReturnType<S, 'initPublic'> {
+): StoreDataSource<T> & MergeReturnType<S, 'initPublic'> {
   const initialize = plugins
     .map((v) => v.init?.())
     .filter((v) => v !== undefined) as PropsFactory<any, any>[];
@@ -78,7 +78,7 @@ export function withDataSource<
     setData(data: T[]) {
       dataStore.update(setEntities(data));
     },
-  } as unknown as TableDataSource<T> & MergeReturnType<S, 'initPublic'>;
+  } as unknown as StoreDataSource<T> & MergeReturnType<S, 'initPublic'>;
   plugins.forEach((plugin) => {
     if (plugin.initPublic != null) {
       Object.assign(ds, plugin.initPublic(dataStore));

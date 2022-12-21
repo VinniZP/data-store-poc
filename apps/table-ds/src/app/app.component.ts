@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {
   ColumnTogglePublic,
-  TableDataSource,
+  StoreDataSource,
   withColumnToggle,
   withDataSource,
   withFiltersProps,
@@ -45,7 +45,7 @@ type Columns = 'position' | 'name' | 'weight' | 'symbol';
 })
 export class AppComponent implements OnInit {
   displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
-  dataSource!: TableDataSource<PeriodicElement> & ColumnTogglePublic<Columns>;
+  dataSource!: StoreDataSource<PeriodicElement> & ColumnTogglePublic<Columns>;
 
   ngOnInit(): void {
     const ds = withDataSource(

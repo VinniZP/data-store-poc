@@ -1,6 +1,6 @@
 import { SortPublic, withLocalSort, withSortProps } from './sort';
 import { fakeAsync, tick } from '@angular/core/testing';
-import { DataWithId, TableDataSource, withDataSource } from 'data-source';
+import { DataWithId, StoreDataSource, withDataSource } from 'data-source';
 import { of, take } from 'rxjs';
 
 interface TestEntity {
@@ -9,7 +9,7 @@ interface TestEntity {
   age: number;
 }
 describe('withSortProps', function () {
-  let ds: TableDataSource<TestEntity> & SortPublic<PropertyKey>;
+  let ds: StoreDataSource<TestEntity> & SortPublic<PropertyKey>;
   beforeEach(function () {
     ds = withDataSource(
       {
@@ -41,7 +41,7 @@ describe('withSortProps', function () {
 });
 
 describe('withLocalSort', function () {
-  let ds: TableDataSource<TestEntity> & SortPublic<PropertyKey>;
+  let ds: StoreDataSource<TestEntity> & SortPublic<PropertyKey>;
   beforeEach(function () {
     ds = withDataSource(
       {
