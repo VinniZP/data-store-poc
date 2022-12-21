@@ -81,7 +81,6 @@ describe('withLocalSort', function () {
     ds.connect({ viewChange: of({ start: 0, end: 10 }) })
       .pipe(take(1))
       .subscribe((data) => {
-        console.log(data);
         expect(data.map((value) => value.id)).toEqual([2, 1, 3]);
       });
     tick();

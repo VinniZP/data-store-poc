@@ -75,7 +75,6 @@ export function withLocalSort<
               }
               return [...entities].sort((a, b) => {
                 const sortFn = sortMethods[sort.key];
-                console.log(sortFn(a, b, sort.direction));
                 if (sortFn) {
                   return sortFn(a, b, sort.direction);
                 }
