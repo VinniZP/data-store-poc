@@ -16,7 +16,7 @@ export interface SortProps<SortBy extends PropertyKey> {
 export interface SortPublic<SortBy extends PropertyKey = string> {
   sort$: Observable<SortParam<SortBy> | null>;
 
-  setSort(sort: SortParam<SortBy>): void;
+  setSort(sort: SortParam<SortBy> | null): void;
 }
 
 export function withSortProps<
@@ -40,10 +40,10 @@ export function withSortProps<
     ): SortPublic<SortBy> {
       return {
         sort$: store.pipe(select((state) => state.sort)),
-        setSort(sort: SortParam<SortBy>) {
+        setSort(sort: SortParam<SortBy> | null) {
           store.update((state) => ({
             ...state,
-            sort: state.sort ? { ...state.sort, ...sort } : sort,
+            sort: sort,
           }));
         },
       };

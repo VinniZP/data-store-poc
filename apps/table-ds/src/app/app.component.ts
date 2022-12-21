@@ -3,7 +3,7 @@ import {
   ColumnTogglePublic,
   StoreDataSource,
   withColumnToggle,
-  withDataSource,
+  createDataSource,
   withFiltersProps,
   withLocalFilters,
 } from 'data-source';
@@ -48,7 +48,7 @@ export class AppComponent implements OnInit {
   dataSource!: StoreDataSource<PeriodicElement> & ColumnTogglePublic<Columns>;
 
   ngOnInit(): void {
-    const ds = withDataSource(
+    const ds = createDataSource(
       {
         data: ELEMENT_DATA,
         name: 'periodicTable',

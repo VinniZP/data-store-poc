@@ -13,6 +13,7 @@ export interface FilterPublic<Filters = string> {
   resetFiltersToInitial(): void;
 
   setFilters(filters: Partial<Filters>): void;
+  resetFilters(): void;
 }
 
 export function withFiltersProps<
@@ -51,6 +52,12 @@ export function withFiltersProps<
             filters: state.filters ? { ...state.filters, ...filters } : filters,
           }));
         },
+        resetFilters() {
+          store.update((state) => ({
+            ...state,
+            filters: {},
+          }));
+        },
       };
     },
   };
@@ -74,7 +81,7 @@ export function withLocalFilters<
             store.pipe(select((state) => state.filters)),
           ]).pipe(
             map(([entities, filters]) => {
-              if (!filters) {
+              if (!filters || Object.keys(filters).length === 0) {
                 return entities;
               }
               return entities.filter((entity) => {

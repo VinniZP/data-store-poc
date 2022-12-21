@@ -1,12 +1,12 @@
 import { fakeAsync, tick } from '@angular/core/testing';
 import { select, withProps } from '@ngneat/elf';
-import { withDataSource } from 'data-source';
+import { createDataSource } from 'data-source';
 import { of } from 'rxjs';
 
 const collectionViewer = { viewChange: of({ start: 0, end: 10 }) };
 
 it('should create datasource with empty data', fakeAsync(() => {
-  const ds = withDataSource({ name: 'test' });
+  const ds = createDataSource({ name: 'test' });
 
   ds.connect(collectionViewer).subscribe((v) => {
     expect(v).toEqual([]);
@@ -16,7 +16,7 @@ it('should create datasource with empty data', fakeAsync(() => {
 }));
 
 it('should create datasource with data', fakeAsync(() => {
-  const ds = withDataSource({ name: 'test', data: [{ id: 1 }] });
+  const ds = createDataSource({ name: 'test', data: [{ id: 1 }] });
 
   ds.connect(collectionViewer).subscribe((v) => {
     expect(v).toEqual([{ id: 1 }]);
@@ -26,7 +26,7 @@ it('should create datasource with data', fakeAsync(() => {
 }));
 
 it('should create datasource with data and plugin', fakeAsync(() => {
-  const ds = withDataSource(
+  const ds = createDataSource(
     { name: 'test', data: [{ id: 1 }] },
     {
       init() {

@@ -53,7 +53,7 @@ export interface DataSourcePlugin<
   };
 }
 
-export function withDataSource<
+export function createDataSource<
   T extends DataWithId,
   S extends [...DataSourcePlugin<any, any, T>[]]
 >(
@@ -72,9 +72,8 @@ export function withDataSource<
     connect(collectionViewer: CollectionViewer): Observable<T[]> {
       return dataStore.pipe(selectAllEntities());
     },
-    disconnect(collectionViewer: CollectionViewer) {
-      dataStore.destroy();
-    },
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    disconnect(collectionViewer: CollectionViewer) {},
     setData(data: T[]) {
       dataStore.update(setEntities(data));
     },

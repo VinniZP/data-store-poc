@@ -2,7 +2,7 @@ import { fakeAsync, tick } from '@angular/core/testing';
 import {
   FilterPublic,
   StoreDataSource,
-  withDataSource,
+  createDataSource,
   withFiltersProps,
   withLocalFilters,
 } from 'data-source';
@@ -21,7 +21,7 @@ interface TestFilters {
 describe('withFiltersProps', function () {
   let ds: StoreDataSource<TestEntity> & FilterPublic<TestFilters>;
   beforeEach(function () {
-    ds = withDataSource(
+    ds = createDataSource(
       {
         name: 'test',
         data: [] as TestEntity[],
@@ -59,7 +59,7 @@ describe('withFiltersProps', function () {
 describe('withLocalFilters', function () {
   let ds: StoreDataSource<TestEntity> & FilterPublic<TestFilters>;
   beforeEach(function () {
-    ds = withDataSource(
+    ds = createDataSource(
       {
         name: 'test',
         data: [
@@ -83,6 +83,27 @@ describe('withLocalFilters', function () {
     ds.setFilters({ name: 'b' });
     ds.connect({ viewChange: of({ start: 0, end: 10 }) }).subscribe((data) => {
       expect(data).toEqual([{ id: 2, name: 'b', age: 3 }]);
+    });
+    tick();
+  }));
+
+  it('should reset filters', fakeAsync(function () {
+    ds.resetFilters();
+    ds.connect({ viewChange: of({ start: 0, end: 10 }) }).subscribe((data) => {
+      expect(data).toEqual([
+        { id: 1, name: 'a', age: 15 },
+        { id: 2, name: 'b', age: 3 },
+        { id: 3, name: 'c', age: 33 },
+      ]);
+    });
+    tick();
+  }));
+
+  it('should reset to initial filters', fakeAsync(function () {
+    ds.setFilters({ name: 'b' });
+    ds.resetFiltersToInitial();
+    ds.connect({ viewChange: of({ start: 0, end: 10 }) }).subscribe((data) => {
+      expect(data).toEqual([{ id: 1, name: 'a', age: 15 }]);
     });
     tick();
   }));

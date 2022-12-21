@@ -1,6 +1,6 @@
 import { SortPublic, withLocalSort, withSortProps } from './sort';
 import { fakeAsync, tick } from '@angular/core/testing';
-import { DataWithId, StoreDataSource, withDataSource } from 'data-source';
+import { DataWithId, StoreDataSource, createDataSource } from 'data-source';
 import { of, take } from 'rxjs';
 
 interface TestEntity {
@@ -11,7 +11,7 @@ interface TestEntity {
 describe('withSortProps', function () {
   let ds: StoreDataSource<TestEntity> & SortPublic<PropertyKey>;
   beforeEach(function () {
-    ds = withDataSource(
+    ds = createDataSource(
       {
         name: 'test',
         data: [
@@ -43,7 +43,7 @@ describe('withSortProps', function () {
 describe('withLocalSort', function () {
   let ds: StoreDataSource<TestEntity> & SortPublic<PropertyKey>;
   beforeEach(function () {
-    ds = withDataSource(
+    ds = createDataSource(
       {
         name: 'test',
         data: [
@@ -82,6 +82,26 @@ describe('withLocalSort', function () {
       .pipe(take(1))
       .subscribe((data) => {
         expect(data.map((value) => value.id)).toEqual([2, 1, 3]);
+      });
+    tick();
+  }));
+
+  it('should return the same data if sort is not set', fakeAsync(function () {
+    ds.setSort(null);
+    ds.connect({ viewChange: of({ start: 0, end: 10 }) })
+      .pipe(take(1))
+      .subscribe((data) => {
+        expect(data.map((value) => value.id)).toEqual([1, 2, 3]);
+      });
+    tick();
+  }));
+
+  it('should return the same data if sort field is wrong', fakeAsync(function () {
+    ds.setSort({ key: 'wrong', direction: 'asc' });
+    ds.connect({ viewChange: of({ start: 0, end: 10 }) })
+      .pipe(take(1))
+      .subscribe((data) => {
+        expect(data.map((value) => value.id)).toEqual([1, 2, 3]);
       });
     tick();
   }));
